@@ -38,7 +38,7 @@ vm_netmask = "24"
 vm_gateway = "192.168.1.1"
 
 # The DNS server used by the virtual machine #
-vm_dns = "192.168.0.109 8.8.8.8"
+vm_dns = "192.168.0.109"
 
 # The domain name used by the virtual machine #
 vm_domain = ""
@@ -58,12 +58,12 @@ vm_ram = "1024"
 # The IP address of the virtual machine #
 vm_ip = "192.168.1.52"
 
-#Size of your vm's
+#Size of your vm's in GB
 disk_size = "100"
 
 #disk provisioning true or false
-thin_provisioned = "true"
+# thin_provisioned = "true"
 
-vm_user = "demo"
+vm_user = "ubuntu"
 
 vm_password = "ROOT#123"

@@ -71,7 +71,7 @@ resource "vsphere_virtual_machine" "standalone" {
     #size             = "${data.vsphere_virtual_machine.template.disks.0.size}"
     size             = "${var.disk_size != "" ? var.disk_size : data.vsphere_virtual_machine.template.disks.0.size}"
     eagerly_scrub    = "${data.vsphere_virtual_machine.template.disks.0.eagerly_scrub}"
-    thin_provisioned = "${var.thin_provisioned != "" ? var.thin_provisioned : data.vsphere_virtual_machine.template.disks.0.thin_provisioned}"
+    thin_provisioned = "${data.vsphere_virtual_machine.template.disks.0.thin_provisioned}"
   }
 
   clone {
@@ -84,8 +84,8 @@ resource "vsphere_virtual_machine" "standalone" {
       linux_options {
         host_name = "${var.vm_name}"
         domain    = "${var.vm_domain}"
-        user      = "${var.vm_user}"
-        password  = "${var.vm_password}"
+        # user      = "${var.vm_user}"
+        # password  = "${var.vm_password}"
     
       }
 
@@ -97,27 +97,38 @@ resource "vsphere_virtual_machine" "standalone" {
       ipv4_gateway    = "${var.vm_gateway}"
       dns_server_list = ["${var.vm_dns}"]
     }
-  
-  connection {
-    type = "ssh"
-    user = "${var.vm_user}"
-    password = "${var.vm_password}"
-    host = "${vsphere_virtual_machine.vm.default_ip_address}"
-    port = "22"
-    agent = false
-    }
-
-    # provisioner "file" {
-    #   source = "files/volume.sh"
-    #   destination = "/tmp/volume.sh"
-    #   }
-
-    # provisioner "remote-exec" {
-    #   inline = [
-    #     "chmod +x /tmp/volume.sh",
-    #     "/tmp/volume.sh ${var.devpath}",
-    #   ]
-    #   }
-    
   }
-}
+
+
+  provisioner "remote-exec" {
+    connection {
+      type = "ssh"
+      user = "${var.vm_user}"
+      password = "${var.vm_password}"
+      host = "${var.vm_ip}"
+      port = "22"
+      agent = false
+      }
+      
+      inline = [
+        "echo ${var.vm_password} | sudo -S growpart /dev/sda 2",
+        "sudo growpart /dev/sda 5",
+        "sudo pvresize /dev/sda5",
+        "sudo lvextend -l +100%FREE /dev/mapper/ubuntu--vg-root",
+        "sudo resize2fs /dev/mapper/ubuntu--vg-root"
+      ]
+
+      # provisioner "file" {
+      #   source = "files/volume.sh"
+      #   destination = "/tmp/volume.sh"
+      #   }
+
+      # provisioner "remote-exec" {
+      #   inline = [
+      #     "chmod +x /tmp/volume.sh",
+      #     "/tmp/volume.sh ${var.devpath}",
+      #   ]
+      #   }
+      
+    }
+  }
