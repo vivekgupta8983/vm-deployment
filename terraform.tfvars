@@ -59,7 +59,7 @@ vm_ram = "1024"
 vm_ip = "192.168.1.52"
 
 #Size of your vm's in GB
-disk_size = "100"
+disk_size = "120"
 
 #disk provisioning true or false
 # thin_provisioned = "true"
