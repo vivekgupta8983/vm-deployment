@@ -38,7 +38,7 @@ vm_netmask = "24"
 vm_gateway = "192.168.1.1"
 
 # The DNS server used by the virtual machine #
-vm_dns = "192.168.0.109"
+vm_dns = "192.168.0.109 8.8.8.8"
 
 # The domain name used by the virtual machine #
 vm_domain = ""
@@ -62,5 +62,8 @@ vm_ip = "192.168.1.52"
 disk_size = "100"
 
 #disk provisioning true or false
-disk_provisioned = "true"
+thin_provisioned = "true"
 
+vm_user = "demo"
+
+vm_password = "ROOT#123"

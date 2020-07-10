@@ -11,6 +11,8 @@ provider "vsphere" {
   allow_unverified_ssl = "${var.vsphere_unverified_ssl}"
 }
 
+
+
 #===============================================================================
 # vSphere Data
 #===============================================================================
@@ -69,7 +71,7 @@ resource "vsphere_virtual_machine" "standalone" {
     #size             = "${data.vsphere_virtual_machine.template.disks.0.size}"
     size             = "${var.disk_size != "" ? var.disk_size : data.vsphere_virtual_machine.template.disks.0.size}"
     eagerly_scrub    = "${data.vsphere_virtual_machine.template.disks.0.eagerly_scrub}"
-    thin_provisioned = "${var.disk_provisioned != "" ? var.disk_provisioned : data.vsphere_virtual_machine.template.disks.0.thin_provisioned}"
+    thin_provisioned = "${var.thin_provisioned != "" ? var.thin_provisioned : data.vsphere_virtual_machine.template.disks.0.thin_provisioned}"
   }
 
   clone {
@@ -82,6 +84,9 @@ resource "vsphere_virtual_machine" "standalone" {
       linux_options {
         host_name = "${var.vm_name}"
         domain    = "${var.vm_domain}"
+        user      = "${var.vm_user}"
+        password  = "${var.vm_password}"
+    
       }
 
       network_interface {
@@ -92,5 +97,27 @@ resource "vsphere_virtual_machine" "standalone" {
       ipv4_gateway    = "${var.vm_gateway}"
       dns_server_list = ["${var.vm_dns}"]
     }
+  
+  connection {
+    type = "ssh"
+    user = "${var.vm_user}"
+    password = "${var.vm_password}"
+    host = "${vsphere_virtual_machine.vm.default_ip_address}"
+    port = "22"
+    agent = false
+    }
+
+    # provisioner "file" {
+    #   source = "files/volume.sh"
+    #   destination = "/tmp/volume.sh"
+    #   }
+
+    # provisioner "remote-exec" {
+    #   inline = [
+    #     "chmod +x /tmp/volume.sh",
+    #     "/tmp/volume.sh ${var.devpath}",
+    #   ]
+    #   }
+    
   }
 }

@@ -84,6 +84,14 @@ variable "disk_size" {
 description = "data disk size for sap"
 }
 
-variable "disk_provisioned" {
-  description = "disk provisioning"
+variable "thin_provisioned" {
+  description = "thin_provisioned"
+}
+
+variable "vm_user" {
+  description = "uername"
+}
+
+variable "vm_password" {
+  description = "password"
 }
